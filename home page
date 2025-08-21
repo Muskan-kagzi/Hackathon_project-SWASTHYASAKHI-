@@ -1,0 +1,1619 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SwasthyaSakhi</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+/* Global */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: "Poppins", sans-serif;
+  background: #fff;
+  color: #333;
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+/* Error Handling Styles */
+.error-toast {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background: linear-gradient(45deg, #ff1744, #ff5722);
+  color: white;
+  padding: 1rem 1.5rem;
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(255, 23, 68, 0.3);
+  z-index: 10000;
+  transform: translateX(400px);
+  transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.error-toast.show {
+  transform: translateX(0);
+}
+
+.error-toast.success {
+  background: linear-gradient(45deg, #4caf50, #66bb6a);
+}
+
+.error-toast.warning {
+  background: linear-gradient(45deg, #ff9800, #ffc107);
+}
+
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(106, 13, 173, 0.9);
+  backdrop-filter: blur(10px);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 9998;
+}
+
+.spinner {
+  width: 60px;
+  height: 60px;
+  border: 4px solid rgba(255, 255, 255, 0.3);
+  border-top: 4px solid #fff;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Header with enhanced animations */
+.header {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  box-shadow: 0 8px 32px rgba(106, 13, 173, 0.15);
+  position: sticky;
+  top: 0; 
+  z-index: 1000;
+  transition: all 0.3s ease;
+}
+
+.header.scrolled {
+  background: rgba(255, 255, 255, 0.98);
+  box-shadow: 0 12px 40px rgba(106, 13, 173, 0.2);
+}
+
+.nav-container {
+  display: flex; 
+  justify-content: space-between; 
+  align-items: center;
+  padding: 1rem 2rem;
+}
+
+.logo { 
+  display: flex; 
+  align-items: center; 
+  gap: 0.5rem; 
+  font-weight: 700; 
+  font-size: 1.3rem; 
+  color: #6A0DAD;
+  transition: transform 0.3s ease;
+  cursor: pointer;
+}
+
+.logo:hover {
+  transform: scale(1.05);
+}
+
+.logo-icon { 
+  color: #6A0DAD;
+  animation: heartbeat 2s ease-in-out infinite;
+}
+
+@keyframes heartbeat {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+}
+
+.nav-links {
+  display: flex;
+  gap: 0;
+}
+
+.nav-links a {
+  margin: 0 1rem; 
+  text-decoration: none; 
+  font-weight: 500;
+  color: #555; 
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.nav-links a::before {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: -100%;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(45deg, #6A0DAD, #9c27b0);
+  transition: left 0.3s ease;
+}
+
+.nav-links a:hover::before {
+  left: 0;
+}
+
+.nav-links a:hover { 
+  color: #6A0DAD; 
+  transform: translateY(-2px);
+}
+
+.menu-btn { 
+  display: none; 
+  background: none; 
+  border: none; 
+  cursor: pointer; 
+  transition: transform 0.3s ease;
+}
+
+.menu-btn:hover {
+  transform: rotate(90deg);
+}
+
+/* Enhanced Hero Section */
+.hero {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  position: relative;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  overflow: hidden;
+}
+
+.hero::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="75" cy="75" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="50" cy="10" r="0.5" fill="rgba(255,255,255,0.05)"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+  animation: backgroundMove 20s linear infinite;
+}
+
+@keyframes backgroundMove {
+  0% {
+    transform: translateX(0) translateY(0);
+  }
+  100% {
+    transform: translateX(-100px) translateY(-100px);
+  }
+}
+
+.hero-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.3);
+}
+
+.hero-content {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  color: white;
+  animation: heroFadeIn 1.2s ease-out 0.5s both;
+}
+
+@keyframes heroFadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(50px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.hero-content h2 {
+  font-size: 3.5rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  animation: textGlow 3s ease-in-out infinite alternate;
+}
+
+@keyframes textGlow {
+  0% {
+    text-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+  }
+  100% {
+    text-shadow: 0 0 30px rgba(255, 255, 255, 0.8), 0 0 40px rgba(147, 51, 234, 0.3);
+  }
+}
+
+.gradient-text {
+  background: linear-gradient(135deg, #fbbf24, #f59e0b);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.subtitle {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  opacity: 0.9;
+}
+
+.desc {
+  font-size: 1.1rem;
+  margin-bottom: 2rem;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+  opacity: 0.8;
+}
+
+.hero-buttons {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+}
+
+.btn {
+  padding: 15px 30px;
+  border: none;
+  border-radius: 50px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s ease;
+}
+
+.btn:hover::before {
+  left: 100%;
+}
+
+.btn.primary {
+  background: linear-gradient(135deg, #9333ea, #a855f7);
+  color: white;
+  box-shadow: 0 10px 30px rgba(147, 51, 234, 0.3);
+}
+
+.btn.primary:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 15px 40px rgba(147, 51, 234, 0.4);
+}
+
+.btn.secondary {
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  backdrop-filter: blur(10px);
+}
+
+.btn.secondary:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: translateY(-3px);
+}
+
+.badge {
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+  padding: 10px 20px;
+  border-radius: 25px;
+  font-size: 0.9rem;
+  display: inline-block;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+/* Enhanced Features Section with Carousel */
+.features { 
+  padding: 4rem 2rem; 
+  text-align: center; 
+  background: linear-gradient(135deg, #f5f0ff, #faf7ff);
+  position: relative;
+}
+
+.features::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(circle at 70% 30%, rgba(106, 13, 173, 0.05) 0%, transparent 50%);
+}
+
+.features h3 {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+  position: relative;
+  z-index: 1;
+}
+
+.highlight { 
+  color: #6A0DAD;
+  position: relative;
+}
+
+.highlight::after {
+  content: '';
+  position: absolute;
+  bottom: -5px;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background: linear-gradient(45deg, #6A0DAD, #9c27b0);
+  border-radius: 2px;
+}
+
+.section-desc {
+  position: relative;
+  z-index: 1;
+  margin-bottom: 2rem;
+}
+
+.carousel-container {
+  position: relative;
+  max-width: 1200px;
+  margin: 0 auto;
+  overflow: hidden;
+  border-radius: 20px;
+  box-shadow: 0 20px 60px rgba(106, 13, 173, 0.15);
+}
+
+.feature-carousel {
+  display: flex;
+  transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.feature-slide {
+  min-width: 100%;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+  padding: 2rem;
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(10px);
+}
+
+.feature-card {
+  background: linear-gradient(145deg, #fff, #f8f4ff);
+  padding: 2.5rem;
+  border-radius: 20px;
+  box-shadow: 0 8px 32px rgba(106, 13, 173, 0.1);
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  position: relative;
+  overflow: hidden;
+  text-decoration: none;
+  color: inherit;
+  border: 1px solid rgba(106, 13, 173, 0.1);
+  cursor: pointer;
+  display: block;
+}
+
+.feature-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(106, 13, 173, 0.1), transparent);
+  transition: left 0.6s ease;
+}
+
+.feature-card:hover::before {
+  left: 100%;
+}
+
+.feature-card:hover { 
+  transform: translateY(-15px) scale(1.02);
+  box-shadow: 0 20px 60px rgba(106, 13, 173, 0.2);
+  border-color: rgba(106, 13, 173, 0.3);
+}
+
+.feature-card:hover .icon {
+  transform: scale(1.1) rotate(10deg);
+  box-shadow: 0 10px 30px rgba(106, 13, 173, 0.3);
+}
+
+.icon {
+  font-size: 2rem; 
+  margin-bottom: 1.5rem; 
+  display: inline-flex;
+  padding: 1.2rem; 
+  border-radius: 50%; 
+  color: #fff;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  position: relative;
+}
+
+.icon::after {
+  content: '';
+  position: absolute;
+  inset: -5px;
+  border-radius: 50%;
+  background: linear-gradient(45deg, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.1));
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: -1;
+}
+
+.icon:hover::after {
+  opacity: 1;
+}
+
+.bg-purple { 
+  background: linear-gradient(45deg, #6A0DAD, #8e24aa);
+}
+
+.bg-purple-dark { 
+  background: linear-gradient(45deg, #4a0072, #6a1b9a);
+}
+
+.bg-purple-light { 
+  background: linear-gradient(45deg, #9c27b0, #ba68c8);
+}
+
+.feature-card h4 {
+  font-size: 1.3rem;
+  margin-bottom: 0.8rem;
+  color: #333;
+  font-weight: 600;
+}
+
+.feature-card p {
+  color: #666;
+  font-size: 1rem;
+}
+
+.carousel-nav {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.carousel-btn {
+  background: linear-gradient(45deg, #6A0DAD, #9c27b0);
+  border: none;
+  color: white;
+  padding: 0.8rem 1.5rem;
+  border-radius: 25px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(106, 13, 173, 0.3);
+}
+
+.carousel-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(106, 13, 173, 0.4);
+}
+
+.carousel-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.carousel-indicators {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.indicator {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: rgba(106, 13, 173, 0.3);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.indicator.active {
+  background: #6A0DAD;
+  transform: scale(1.2);
+}
+
+/* About Section */
+.about {
+  padding: 100px 0;
+  background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+  color: white;
+}
+
+.about-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 4rem;
+  align-items: center;
+}
+
+.about-text h3 {
+  font-size: 2.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.about-text p {
+  font-size: 1.1rem;
+  margin-bottom: 2rem;
+  opacity: 0.9;
+}
+
+.about-text ul {
+  list-style: none;
+}
+
+.about-text li {
+  padding: 0.5rem 0;
+  font-size: 1.1rem;
+  opacity: 0.9;
+  transition: transform 0.3s ease;
+}
+
+.about-text li:hover {
+  transform: translateX(10px);
+}
+
+.stat-card {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 20px;
+  padding: 2rem;
+  text-align: center;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.stat-card::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(106, 13, 173, 0.1) 0%, transparent 70%);
+  animation: rotate 20s linear infinite;
+}
+
+@keyframes rotate {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.stat-card:hover {
+  transform: translateY(-5px);
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.stat-card i {
+  font-size: 3rem;
+  color: #fbbf24;
+  margin-bottom: 1rem;
+  animation: bounce 2s ease-in-out infinite;
+}
+
+@keyframes bounce {
+  0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+  40% { transform: translateY(-10px); }
+  60% { transform: translateY(-5px); }
+}
+
+.stat-card h4 {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+/* Contact Section */
+.contact {
+  padding: 100px 0;
+  background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+}
+
+.contact h3 {
+  font-size: 2.5rem;
+  text-align: center;
+  margin-bottom: 1rem;
+  color: #1e293b;
+}
+
+.contact-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+  margin-top: 3rem;
+}
+
+.contact-card {
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 15px;
+  padding: 2rem;
+  text-align: center;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+
+.contact-card::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(45deg, #6A0DAD, #9c27b0);
+  transform: scaleX(0);
+  transition: transform 0.3s ease;
+}
+
+.contact-card:hover::after {
+  transform: scaleX(1);
+}
+
+.contact-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+}
+
+.contact-card i {
+  font-size: 2.5rem;
+  color: #9333ea;
+  margin-bottom: 1rem;
+  transition: all 0.3s ease;
+}
+
+.contact-card:hover i {
+  transform: scale(1.2) rotate(10deg);
+}
+
+.contact-card h4 {
+  font-size: 1.3rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: #1e293b;
+}
+
+.contact-card p {
+  color: #64748b;
+}
+
+/* Footer - Updated to match about section */
+.footer { 
+  background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+  color: #eee; 
+  padding: 3rem 2rem 1rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.footer::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.05) 0%, transparent 50%);
+}
+
+.footer-grid { 
+  display: grid; 
+  grid-template-columns: repeat(auto-fit,minmax(200px,1fr)); 
+  gap: 2rem;
+  position: relative;
+  z-index: 1;
+}
+
+.footer h4, .footer h5 { 
+  color: #fff; 
+  margin-bottom: 1rem;
+  position: relative;
+}
+
+.footer h4::after, .footer h5::after {
+  content: '';
+  position: absolute;
+  bottom: -5px;
+  left: 0;
+  width: 30px;
+  height: 2px;
+  background: linear-gradient(45deg, #fbbf24, #fff);
+  border-radius: 1px;
+}
+
+.footer ul {
+  list-style: none;
+}
+
+.footer ul li {
+  margin: 0.5rem 0;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  opacity: 0.9;
+}
+
+.footer ul li:hover {
+  transform: translateX(10px);
+  color: #fbbf24;
+}
+
+.footer-bottom { 
+  text-align: center; 
+  margin-top: 2rem; 
+  font-size: 0.85rem;
+  position: relative;
+  z-index: 1;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Enhanced Emergency Button */
+.emergency-btn {
+  position: fixed;
+  bottom: 20px; 
+  right: 20px;
+  background: linear-gradient(45deg, #ff1744, #ff5722);
+  color: white;
+  border: none;
+  padding: 1.2rem;
+  border-radius: 50%;
+  font-size: 1.5rem;
+  cursor: pointer;
+  box-shadow: 0 8px 32px rgba(255, 23, 68, 0.4);
+  animation: pulse 2s infinite, float 4s ease-in-out infinite;
+  transition: all 0.3s ease;
+  z-index: 1000;
+}
+
+.emergency-btn:hover {
+  transform: scale(1.1);
+  box-shadow: 0 12px 40px rgba(255, 23, 68, 0.6);
+}
+
+@keyframes pulse {
+  0% { 
+    transform: scale(1); 
+    box-shadow: 0 8px 32px rgba(255, 23, 68, 0.4), 0 0 0 0 rgba(255, 23, 68, 0.7); 
+  }
+  70% { 
+    transform: scale(1.05); 
+    box-shadow: 0 12px 40px rgba(255, 23, 68, 0.6), 0 0 0 20px rgba(255, 23, 68, 0); 
+  }
+  100% { 
+    transform: scale(1); 
+    box-shadow: 0 8px 32px rgba(255, 23, 68, 0.4), 0 0 0 0 rgba(255, 23, 68, 0); 
+  }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-10px) rotate(180deg); }
+}
+
+/* Mobile Menu Styles */
+@media (max-width: 768px) {
+  .nav-links {
+    position: fixed;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    background: rgba(255, 255, 255, 0.98);
+    backdrop-filter: blur(20px);
+    flex-direction: column;
+    padding: 2rem;
+    transition: top 0.3s ease;
+    box-shadow: 0 8px 32px rgba(106, 13, 173, 0.15);
+  }
+  
+  .nav-links.active {
+    top: 100%;
+  }
+  
+  .menu-btn { 
+    display: block;
+  }
+  
+  .hero h2 { 
+    font-size: 2rem;
+  }
+  
+  .feature-slide { 
+    grid-template-columns: 1fr;
+  }
+  
+  .about-grid { 
+    grid-template-columns: 1fr; 
+    gap: 2rem;
+  }
+  
+  .carousel-nav { 
+    flex-direction: column; 
+    align-items: center;
+  }
+}
+
+/* Scroll animations */
+.fade-in {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: all 0.6s ease;
+}
+
+.fade-in.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Container utility */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+/* Modal styles for demo pages */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 10000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(5px);
+}
+
+.modal-content {
+  background-color: #fff;
+  margin: 5% auto;
+  padding: 2rem;
+  border-radius: 20px;
+  width: 90%;
+  max-width: 600px;
+  position: relative;
+  animation: modalSlideIn 0.3s ease-out;
+}
+
+@keyframes modalSlideIn {
+  0% {
+    opacity: 0;
+    transform: translateY(-50px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.close {
+  color: #aaa;
+  float: right;
+  font-size: 2rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.close:hover {
+  color: #6A0DAD;
+}
+  </style>
+</head>
+<body>
+  <!-- Loading Overlay -->
+  <div class="loading-overlay" id="loadingOverlay">
+    <div class="spinner"></div>
+  </div>
+
+  <!-- Error Toast -->
+  <div class="error-toast" id="errorToast">
+    <span id="toastMessage"></span>
+  </div>
+
+  <!-- Demo Modal -->
+  <div id="demoModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal()">&times;</span>
+      <h2 id="modalTitle">Feature Demo</h2>
+      <p id="modalContent">This feature is in development. In a real application, this would navigate to the actual feature page.</p>
+      <button class="btn primary" onclick="closeModal()" style="margin-top: 1rem;">Got It!</button>
+    </div>
+  </div>
+
+  <!-- Header -->
+  <header class="header" id="header">
+    <div class="container nav-container">
+      <div class="logo" onclick="scrollToSection('home')">
+        <div class="logo-icon">
+          <i data-lucide="heart"></i>
+        </div>
+        <h1>SWASTHYASAKHI</h1>
+      </div>
+      <nav class="nav-links" id="nav-links">
+        <a onclick="scrollToSection('home')">Home</a>
+        <a onclick="scrollToSection('features')">Features</a>
+        <a onclick="scrollToSection('about')">About</a>
+        <a onclick="scrollToSection('contact')">Contact</a>
+      </nav>
+      <button class="menu-btn" id="menu-btn">
+        <i data-lucide="menu"></i>
+      </button>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section id="home" class="hero">
+    <div class="hero-overlay"></div>
+    <div class="container hero-content">
+      <h2>Your Health, <span class="gradient-text">Our Priority</span></h2>
+      <p class="subtitle">Complete women's health solutions at your fingertips</p>
+      <p class="desc">From period tracking to pregnancy care, get personalized health guidance and connect with our caring community of women.</p>
+      <div class="hero-buttons">
+        <button class="btn primary" onclick="handleButtonClick('start')">Start Your Journey</button>
+        <button class="btn secondary" onclick="handleButtonClick('learn')">Learn More</button>
+      </div>
+      <div class="badge">Available in: हिंदी • English • Regional Languages</div>
+    </div>
+  </section>
+
+  <!-- Features with Carousel -->
+  <section id="features" class="features">
+    <div class="container">
+      <h3>Everything You Need for <span class="highlight">Women's Health</span></h3>
+      <p class="section-desc">Simple, caring, and comprehensive health solutions designed specifically for women</p>
+      
+      <div class="carousel-container">
+        <div class="feature-carousel" id="featureCarousel">
+          <!-- Slide 1 -->
+          <div class="feature-slide">
+            <a href="../period/index.html" class="feature-card" onclick="handleFeatureClick('period-tracker')">
+              <div class="icon bg-purple"><i data-lucide="calendar"></i></div>
+              <h4>Period Tracker</h4>
+              <p>Track your cycle with ease and get personalized insights</p>
+            </a>
+            <a href="http://localhost:8501" target="_blank" class="feature-card" onclick="handleFeatureClick('pregnancy-care')">
+              <div class="icon bg-purple-dark"><i data-lucide="baby"></i></div>
+              <h4>Pregnancy Care</h4>
+              <p>Complete pregnancy guidance and monitoring</p>
+            </a>
+            <a href="../chat/index.html" target="_blank" class="feature-card" onclick="handleFeatureClick('ask-didi')">
+              <div class="icon bg-purple-light"><i data-lucide="users"></i></div>
+              <h4>Ask-a-Didi</h4>
+              <p>Community support & expert advice</p>
+            </a>
+          </div>
+          
+          <!-- Slide 2 -->
+          <div class="feature-slide">
+            <a href="http://localhost:8501" target="_blank" class="feature-card" onclick="handleFeatureClick('skin-detection')">
+              <div class="icon bg-purple-light"><i data-lucide="scan"></i></div>
+              <h4>Skin Detection</h4>
+              <p>Get instant skin analysis & personalized tips</p>
+            </a>
+            <a href="../quiz/quiz.html" class="feature-card" onclick="handleFeatureClick('health-quiz')">
+              <div class="icon bg-purple"><i data-lucide="brain"></i></div>
+              <h4>Health Quizzes</h4>
+              <p>Learn about your health through interactive quizzes</p>
+            </a>
+            <a href="../utility/index.html" class="feature-card" onclick="handleFeatureClick('safety-utility')">
+              <div class="icon bg-purple-dark"><i data-lucide="shield"></i></div>
+              <h4>Safety & Utility</h4>
+              <p>Ensures protection and minimizes risk for users</p>
+            </a>
+          </div>
+          
+          <!-- Slide 3 -->
+          <div class="feature-slide">
+            <a href="../pcod/mainpagepcos.html" class="feature-card" onclick="handleFeatureClick('pcod-pcos')">
+              <div class="icon bg-purple"><i data-lucide="activity"></i></div>
+              <h4>PCOD & PCOS</h4>
+              <p>Smart PCOS detection and management tool</p>
+            </a>
+            </a>
+            <a href="../breast/index.html" class="feature-card" onclick="handleFeatureClick('safety-utility')">
+              <div class="icon bg-purple-dark"><i data-lucide="shield"></i></div>
+              <h4>Breast Cancer</h4>
+              <p> Self Analysis for Breast Cancer</p>
+            </a>
+          </div>
+        </div>
+      </div>
+      
+      <!-- <div class="carousel-nav">
+        <button class="carousel-btn" id="prevBtn" onclick="changeSlide(-1)">
+          <i data-lucide="chevron-left"></i> Previous
+        </button>
+        <button class="carousel-btn" id="nextBtn" onclick="changeSlide(1)">
+          Next <i data-lucide="chevron-right"></i>
+        </button>
+      </div> -->
+      
+      <div class="carousel-indicators">
+        <div class="indicator active" onclick="goToSlide(0)"></div>
+        <div class="indicator" onclick="goToSlide(1)"></div>
+        <div class="indicator" onclick="goToSlide(2)"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact -->
+  <section id="contact" class="contact">
+    <div class="container">
+      <h3>Get in <span class="highlight">Touch</span></h3>
+      <p class="section-desc">We're here to support your health journey every step of the way</p>
+      <div class="contact-grid">
+        <div class="contact-card fade-in" onclick="handleContactClick('phone')">
+          <i data-lucide="phone"></i>
+          <h4>Call Us</h4>
+          <p>+91 1800-123-HEALTH</p>
+        </div>
+        <div class="contact-card fade-in" onclick="handleContactClick('email')">
+          <i data-lucide="mail"></i>
+          <h4>Email Us</h4>
+          <p>care@swasthyasakhi.com</p>
+        </div>
+        <div class="contact-card fade-in" onclick="handleContactClick('location')">
+          <i data-lucide="map-pin"></i>
+          <h4>Visit Us</h4>
+          <p>Pan-India Service</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container footer-grid">
+      <div>
+        <h4>SWASTHYASAKHI</h4>
+        <p>Empowering women's health through accessible, caring, and comprehensive solutions.</p>
+      </div>
+      <div>
+        <h5>Features</h5>
+        <ul>
+          <li onclick="scrollToSection('features')">Period Tracker</li>
+          <li onclick="scrollToSection('features')">Pregnancy Care</li>
+          <li onclick="scrollToSection('features')">Ask-a-Didi Community</li>
+          <li onclick="scrollToSection('features')">Health Quizzes</li>
+        </ul>
+      </div>
+      <div>
+        <h5>Support</h5>
+        <ul>
+          <li onclick="showHelpCenter()">Help Center</li>
+          <li onclick="scrollToSection('contact')">Contact Us</li>
+          <li onclick="showPrivacyPolicy()">Privacy Policy</li>
+          <li onclick="showTermsOfService()">Terms of Service</li>
+        </ul>
+      </div>
+      <div>
+        <h5>Languages</h5>
+        <ul>
+          <li onclick="changeLanguage('hindi')">Hindi - हिंदी</li>
+          <li onclick="changeLanguage('english')">English</li>
+          <li onclick="changeLanguage('regional')">Regional Languages</li>
+          <li onclick="enableVoiceSupport()">Voice Support</li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2024 SWASTHYASAKHI. Made with ❤️ for women's health.</p>
+    </div>
+  </footer>
+
+  <!-- Floating Emergency Button -->
+  <button class="emergency-btn" onclick="handleEmergency()">
+    <i data-lucide="alert-triangle"></i>
+  </button>
+
+  <script>
+    // Error Handling System
+    class ErrorHandler {
+      static instance = null;
+      
+      constructor() {
+        if (ErrorHandler.instance) {
+          return ErrorHandler.instance;
+        }
+        ErrorHandler.instance = this;
+        this.initializeErrorHandling();
+      }
+      
+      initializeErrorHandling() {
+        // Global error handler
+        window.addEventListener('error', (event) => {
+          this.logError('JavaScript Error', event.error);
+          this.showToast('An error occurred. Please try again.', 'error');
+        });
+        
+        // Promise rejection handler
+        window.addEventListener('unhandledrejection', (event) => {
+          this.logError('Promise Rejection', event.reason);
+          this.showToast('Something went wrong. Please refresh the page.', 'error');
+          event.preventDefault();
+        });
+        
+        // Network error handler
+        window.addEventListener('offline', () => {
+          this.showToast('You are offline. Some features may not work.', 'warning');
+        });
+        
+        window.addEventListener('online', () => {
+          this.showToast('Connection restored!', 'success');
+        });
+      }
+      
+      showToast(message, type = 'error') {
+        const toast = document.getElementById('errorToast');
+        const toastMessage = document.getElementById('toastMessage');
+        
+        if (!toast || !toastMessage) return;
+        
+        // Remove existing classes
+        toast.className = 'error-toast';
+        
+        // Add type class
+        if (type !== 'error') {
+          toast.classList.add(type);
+        }
+        
+        toastMessage.textContent = message;
+        toast.classList.add('show');
+        
+        // Auto hide after 4 seconds
+        setTimeout(() => {
+          toast.classList.remove('show');
+        }, 4000);
+      }
+      
+      showLoading() {
+        const overlay = document.getElementById('loadingOverlay');
+        if (overlay) {
+          overlay.style.display = 'flex';
+        }
+      }
+      
+      hideLoading() {
+        const overlay = document.getElementById('loadingOverlay');
+        if (overlay) {
+          overlay.style.display = 'none';
+        }
+      }
+      
+      async safeNavigate(url, target = '_self') {
+        try {
+          this.showLoading();
+          
+          // Simulate loading time
+          await new Promise(resolve => setTimeout(resolve, 500));
+          
+          if (target === '_blank') {
+            window.open(url, '_blank');
+          } else {
+            window.location.href = url;
+          }
+          
+          this.showToast('Loading...', 'success');
+        } catch (error) {
+          this.logError('Navigation Error', error);
+          this.showToast('Failed to navigate. Please try again.', 'error');
+        } finally {
+          setTimeout(() => this.hideLoading(), 1000);
+        }
+      }
+      
+      logError(type, error) {
+        const errorInfo = {
+          type,
+          message: error?.message || error,
+          stack: error?.stack,
+          timestamp: new Date().toISOString(),
+          url: window.location.href,
+          userAgent: navigator.userAgent
+        };
+        
+        console.error('Error logged:', errorInfo);
+        // In production, send to monitoring service
+      }
+      
+      validateForm(formData) {
+        const errors = [];
+        
+        for (const [key, value] of Object.entries(formData)) {
+          if (!value || value.trim() === '') {
+            errors.push(`${key} is required`);
+          }
+        }
+        
+        if (errors.length > 0) {
+          this.showToast(errors[0], 'error');
+          return false;
+        }
+        
+        return true;
+      }
+    }
+    
+    // Initialize error handler
+    const errorHandler = new ErrorHandler();
+    
+    // Carousel functionality
+    let currentSlide = 0;
+    const totalSlides = 3;
+    
+    function changeSlide(direction) {
+      try {
+        const carousel = document.getElementById('featureCarousel');
+        const indicators = document.querySelectorAll('.indicator');
+        
+        if (!carousel || !indicators.length) {
+          throw new Error('Carousel elements not found');
+        }
+        
+        currentSlide += direction;
+        
+        if (currentSlide >= totalSlides) {
+          currentSlide = 0;
+        } else if (currentSlide < 0) {
+          currentSlide = totalSlides - 1;
+        }
+        
+        carousel.style.transform = `translateX(-${currentSlide * 100}%)`;
+        
+        // Update indicators
+        indicators.forEach((indicator, index) => {
+          indicator.classList.toggle('active', index === currentSlide);
+        });
+        
+        // Update button states
+        updateCarouselButtons();
+        
+      } catch (error) {
+        errorHandler.logError('Carousel Error', error);
+        errorHandler.showToast('Carousel navigation failed', 'error');
+      }
+    }
+    
+    function goToSlide(slideIndex) {
+      try {
+        if (slideIndex < 0 || slideIndex >= totalSlides) {
+          throw new Error('Invalid slide index');
+        }
+        
+        const carousel = document.getElementById('featureCarousel');
+        const indicators = document.querySelectorAll('.indicator');
+        
+        currentSlide = slideIndex;
+        carousel.style.transform = `translateX(-${currentSlide * 100}%)`;
+        
+        indicators.forEach((indicator, index) => {
+          indicator.classList.toggle('active', index === currentSlide);
+        });
+        
+        updateCarouselButtons();
+        
+      } catch (error) {
+        errorHandler.logError('Slide Navigation Error', error);
+        errorHandler.showToast('Failed to navigate to slide', 'error');
+      }
+    }
+    
+    function updateCarouselButtons() {
+      const prevBtn = document.getElementById('prevBtn');
+      const nextBtn = document.getElementById('nextBtn');
+      
+      if (prevBtn && nextBtn) {
+        prevBtn.disabled = false;
+        nextBtn.disabled = false;
+      }
+    }
+    
+    // Auto-play carousel
+    function startAutoPlay() {
+      setInterval(() => {
+        changeSlide(1);
+      }, 5000);
+    }
+
+    // Navigation functions
+    function scrollToSection(sectionId) {
+      try {
+        const section = document.getElementById(sectionId);
+        if (section) {
+          section.scrollIntoView({ 
+            behavior: 'smooth',
+            block: 'start'
+          });
+          errorHandler.showToast(`Navigating to ${sectionId}...`, 'success');
+        } else {
+          throw new Error(`Section ${sectionId} not found`);
+        }
+      } catch (error) {
+        errorHandler.logError('Navigation Error', error);
+        errorHandler.showToast('Failed to navigate. Please try again.', 'error');
+      }
+    }
+    
+    // Modal functions
+    function showModal(title, content) {
+      const modal = document.getElementById('demoModal');
+      const modalTitle = document.getElementById('modalTitle');
+      const modalContent = document.getElementById('modalContent');
+      
+      if (modal && modalTitle && modalContent) {
+        modalTitle.textContent = title;
+        modalContent.textContent = content;
+        modal.style.display = 'block';
+      }
+    }
+    
+    function closeModal() {
+      const modal = document.getElementById('demoModal');
+      if (modal) {
+        modal.style.display = 'none';
+      }
+    }
+    
+    // Event handlers with error handling
+    function handleButtonClick(action) {
+      try {
+        errorHandler.showLoading();
+        
+        switch (action) {
+          case 'start':
+            errorHandler.showToast('🌟 Welcome to your health journey!', 'success');
+            setTimeout(() => {
+              showModal(
+                'Welcome to SwasthyaSakhi!', 
+                'Your health journey starts here. Choose from our comprehensive features to track your wellness, connect with our community, and get personalized health guidance.'
+              );
+              errorHandler.hideLoading();
+            }, 1000);
+            break;
+          case 'learn':
+            
+            errorHandler.hideLoading();
+            scrollToSection('about');
+            break;
+          default:
+            throw new Error('Unknown action');
+        }
+      } catch (error) {
+        errorHandler.logError('Button Click Error', error);
+        errorHandler.showToast('Action failed. Please try again.', 'error');
+        errorHandler.hideLoading();
+      }
+    }
+    
+    function handleFeatureClick(feature, title, description) {
+      try {
+        errorHandler.showToast(`Opening ${title}...`, 'success');
+        setTimeout(() => {
+          showModal(title, description + ' This feature will be available in the full application.');
+        }, 500);
+      } catch (error) {
+        errorHandler.logError('Feature Click Error', error);
+        errorHandler.showToast('Failed to open feature', 'error');
+      }
+    }
+    
+    function handleContactClick(method) {
+      try {
+        switch (method) {
+          case 'phone':
+            errorHandler.showToast('📞 Calling helpline...', 'success');
+            showModal('Call Support', 'Our health support team is available 24/7 at +91 1800-123-HEALTH. You can also use the emergency button for urgent medical assistance.');
+            break;
+          case 'email':
+            errorHandler.showToast('📧 Opening email client...', 'success');
+            showModal('Email Support', 'Send us your queries at care@swasthyasakhi.com. We typically respond within 24 hours. For urgent medical concerns, please call our helpline.');
+            break;
+          case 'location':
+            errorHandler.showToast('📍 Showing service locations...', 'success');
+            showModal('Our Service', 'SwasthyaSakhi provides pan-India service through our digital platform. We have partner clinics and healthcare providers across major cities and rural areas.');
+            break;
+        }
+      } catch (error) {
+        errorHandler.logError('Contact Click Error', error);
+        errorHandler.showToast('Failed to initiate contact', 'error');
+      }
+    }
+    
+    function handleEmergency() {
+      try {
+        errorHandler.showToast('🚨 Emergency Support Activated! 🚑', 'error');
+        
+        setTimeout(() => {
+          showModal(
+            'Emergency Support', 
+            '🚨 EMERGENCY PROTOCOLS ACTIVATED 🚨\n\n• Connecting to nearest medical facility\n• Sending location to emergency contacts\n• Prioritizing your safety\n\nFor immediate assistance, call 112 (National Emergency Number) or your local emergency services.'
+          );
+          errorHandler.showToast('Emergency services notified. Stay safe!', 'success');
+        }, 2000);
+        
+      } catch (error) {
+        errorHandler.logError('Emergency Handler Error', error);
+        errorHandler.showToast('Emergency system unavailable. Please call 112 directly.', 'error');
+      }
+    }
+    
+    // Footer function handlers
+    function showHelpCenter() {
+      showModal('Help Center', 'Our comprehensive help center includes:\n• Getting Started Guide\n• Feature Tutorials\n• Troubleshooting\n• FAQs\n• Video Guides\n\nAccess 24/7 support and community forums.');
+      errorHandler.showToast('Opening Help Center...', 'success');
+    }
+    
+    function showPrivacyPolicy() {
+      showModal('Privacy Policy', 'Your privacy is our priority. We follow strict data protection guidelines:\n• No personal health data sharing\n• Encrypted storage\n• GDPR compliance\n• You control your data\n\nRead our full privacy policy for complete details.');
+      errorHandler.showToast('Loading Privacy Policy...', 'success');
+    }
+    
+    function showTermsOfService() {
+      showModal('Terms of Service', 'By using SwasthyaSakhi, you agree to our terms:\n• Medical advice disclaimer\n• User responsibilities\n• Service availability\n• Content guidelines\n\nPlease read the complete terms for full details.');
+      errorHandler.showToast('Loading Terms of Service...', 'success');
+    }
+    
+    function changeLanguage(lang) {
+      const languages = {
+        hindi: 'Hindi - हिंदी',
+        english: 'English',
+        regional: 'Regional Languages'
+      };
+      
+      errorHandler.showToast(`Switching to ${languages[lang]}...`, 'success');
+      showModal('Language Support', `Switching to ${languages[lang]}. SwasthyaSakhi supports multiple languages to make healthcare accessible to everyone. Voice commands are also available in your preferred language.`);
+    }
+    
+    function enableVoiceSupport() {
+      errorHandler.showToast('🎤 Enabling Voice Support...', 'success');
+      showModal('Voice Support', 'Voice support allows you to:\n• Ask health questions verbally\n• Navigate using voice commands\n• Get audio responses\n• Hands-free operation\n\nTap the microphone icon anywhere in the app to start.');
+    }
+    
+    // Mobile Menu Toggle
+    function initializeMobileMenu() {
+      try {
+        const menuBtn = document.getElementById("menu-btn");
+        const navLinks = document.getElementById("nav-links");
+        
+        if (!menuBtn || !navLinks) {
+          throw new Error('Menu elements not found');
+        }
+        
+        menuBtn.addEventListener("click", () => {
+          navLinks.classList.toggle("active");
+          const isActive = navLinks.classList.contains("active");
+          menuBtn.innerHTML = isActive
+            ? '<i data-lucide="x"></i>'
+            : '<i data-lucide="menu"></i>';
+          lucide.createIcons();
+        });
+      } catch (error) {
+        errorHandler.logError('Mobile Menu Error', error);
+      }
+    }
+    
+    // Scroll animations
+    function initializeScrollAnimations() {
+      try {
+        const observer = new IntersectionObserver((entries) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('visible');
+            }
+          });
+        }, { threshold: 0.1 });
+        
+        document.querySelectorAll('.fade-in').forEach(el => {
+          observer.observe(el);
+        });
+      } catch (error) {
+        errorHandler.logError('Scroll Animation Error', error);
+      }
+    }
+    
+    // Header scroll effect
+    function initializeHeaderScroll() {
+      try {
+        const header = document.getElementById('header');
+        if (!header) return;
+        
+        window.addEventListener('scroll', () => {
+          if (window.scrollY > 100) {
+            header.classList.add('scrolled');
+          } else {
+            header.classList.remove('scrolled');
+          }
+        });
+      } catch (error) {
+        errorHandler.logError('Header Scroll Error', error);
+      }
+    }
+    
+    // Close modal when clicking outside
+    window.addEventListener('click', (event) => {
+      const modal = document.getElementById('demoModal');
+      if (event.target === modal) {
+        closeModal();
+      }
+    });
+    
+    // Initialize everything when DOM loads
+    document.addEventListener('DOMContentLoaded', function() {
+      try {
+        // Initialize Lucide icons
+        lucide.createIcons();
+        
+        // Initialize all features
+        initializeMobileMenu();
+        initializeScrollAnimations();
+        initializeHeaderScroll();
+        
+        // Start carousel autoplay
+        startAutoPlay();
+        
+        // Show success message
+        setTimeout(() => {
+          errorHandler.showToast('Welcome to SwasthyaSakhi! 💜', 'success');
+        }, 1000);
+        
+      } catch (error) {
+        errorHandler.logError('Initialization Error', error);
+        errorHandler.showToast('Some features may not work properly', 'warning');
+      }
+    });
+    
+    // Performance monitoring
+    window.addEventListener('load', () => {
+      try {
+        const loadTime = performance.now();
+        console.log(`Page loaded in ${loadTime.toFixed(2)}ms`);
+        
+        if (loadTime > 3000) {
+          errorHandler.showToast('Page loaded slowly. Check your connection.', 'warning');
+        }
+      } catch (error) {
+        errorHandler.logError('Performance Monitoring Error', error);
+      }
+    });
+  </script>
+</body>
+</html>
