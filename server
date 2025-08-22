@@ -1,0 +1,164 @@
+const express = require("express");
+const http = require("http");
+const { Server } = require("socket.io");
+
+const app = express();
+const server = http.createServer(app);
+const io = new Server(server);
+
+app.use(express.static("public")); // serve frontend files from public/
+
+// ================== STORAGE ==================
+let roomMessages = {};   // { roomName: [ {sender, msg, time} ] }
+let roomQuestions = {};  // { roomName: [ {id, text, answers: []} ] }
+let roomUsers = {};      // { roomName: count }
+
+// ================== SOCKET LOGIC ==================
+io.on("connection", (socket) => {
+  console.log("A user connected");
+
+  // -------- JOIN ROOM --------
+  socket.on("joinRoom", (room) => {
+    // Validate room
+    if (!isValidRoom(room)) {
+      socket.emit("error", "Invalid room name");
+      return;
+    }
+
+    socket.join(room);
+    console.log(`User joined room: ${room}`);
+
+    // init storage if not present
+    if (!roomMessages[room]) roomMessages[room] = [];
+    if (!roomQuestions[room]) roomQuestions[room] = [];
+    if (!roomUsers[room]) roomUsers[room] = 0;
+
+    // update user count
+    roomUsers[room]++;
+    io.to(room).emit("userCount", roomUsers[room]);
+
+    // notify others
+    const joinMessage = {
+      sender: "System",
+      msg: `A new user joined ${room.replace('-', ' ')} room`,
+      time: new Date().toLocaleTimeString()
+    };
+    roomMessages[room].push(joinMessage);
+    
+    // Keep only last 100 messages
+    if (roomMessages[room].length > 100) {
+      roomMessages[room] = roomMessages[room].slice(-100);
+    }
+    
+    io.to(room).emit("chat message", joinMessage);
+
+    // send history (messages + questions) to this user
+    socket.emit("previousMessages", roomMessages[room]);
+    socket.emit("previousQuestions", roomQuestions[room]);
+  });
+
+  // -------- CHAT MESSAGES --------
+  socket.on("chat message", ({ room, msg }) => {
+    // Validate room and message
+    if (!isValidRoom(room) || !msg || msg.trim().length === 0) {
+      return;
+    }
+
+    const messageData = {
+      sender: "Anonymous",
+      msg: msg.trim(),
+      time: new Date().toLocaleTimeString()
+    };
+
+    // save last 100 messages
+    roomMessages[room] = roomMessages[room] || [];
+    roomMessages[room].push(messageData);
+    if (roomMessages[room].length > 100) roomMessages[room].shift();
+
+    // broadcast to all others in room (not including sender)
+    socket.to(room).emit("chat message", messageData);
+  });
+
+  // -------- Q&A FEATURE --------
+  socket.on("askQuestion", ({ room, question }) => {
+    // Validate room and question
+    if (!isValidRoom(room) || !question || question.trim().length === 0) {
+      return;
+    }
+
+    const q = {
+      id: Date.now(),
+      text: question.trim(),
+      answers: [],
+      timestamp: new Date().toISOString()
+    };
+    
+    roomQuestions[room] = roomQuestions[room] || [];
+    roomQuestions[room].push(q);
+    
+    // Keep only last 50 questions per room
+    if (roomQuestions[room].length > 50) {
+      roomQuestions[room] = roomQuestions[room].slice(-50);
+    }
+    
+    io.to(room).emit("newQuestion", q);
+  });
+
+  socket.on("answerQuestion", ({ room, qid, answer }) => {
+    // Validate inputs
+    if (!isValidRoom(room) || !answer || answer.trim().length === 0) {
+      return;
+    }
+
+    const q = roomQuestions[room]?.find((q) => q.id === qid);
+    if (q) {
+      q.answers.push(answer.trim());
+      io.to(room).emit("newAnswer", { qid, answer: answer.trim() });
+    }
+  });
+
+  // -------- DISCONNECT --------
+  socket.on("disconnecting", () => {
+    const rooms = [...socket.rooms].filter((r) => r !== socket.id);
+
+    rooms.forEach((room) => {
+      if (roomUsers[room] && isValidRoom(room)) {
+        roomUsers[room]--;
+        io.to(room).emit("userCount", roomUsers[room]);
+
+        const leaveMessage = {
+          sender: "System",
+          msg: `A user left ${room.replace('-', ' ')} room`,
+          time: new Date().toLocaleTimeString()
+        };
+        roomMessages[room] = roomMessages[room] || [];
+        roomMessages[room].push(leaveMessage);
+        
+        // Keep only last 100 messages
+        if (roomMessages[room].length > 100) {
+          roomMessages[room] = roomMessages[room].slice(-100);
+        }
+        
+        io.to(room).emit("chat message", leaveMessage);
+      }
+    });
+  });
+
+  socket.on("disconnect", () => {
+    console.log("User disconnected");
+  });
+});
+
+// ================== ALLOWED ROOMS ==================
+const allowedRooms = ['pregnancy', 'periods', 'breast-health', 'postpartum', 'general'];
+
+// Validate room names
+function isValidRoom(room) {
+  return allowedRooms.includes(room);
+}
+
+// ================== START SERVER ==================
+server.listen(3000, () => {
+  console.log("Server running on http://localhost:3000");
+  console.log("Available rooms:", allowedRooms.join(", "));
+});
