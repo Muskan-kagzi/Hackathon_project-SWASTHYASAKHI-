@@ -76,6 +76,7 @@ body {
 
 /* Header with enhanced animations */
 .header {
+  height: 80px;
   background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(20px);
   box-shadow: 0 8px 32px rgba(106, 13, 173, 0.15);
@@ -112,8 +113,12 @@ body {
 }
 
 .logo-icon { 
-  color: #6A0DAD;
-  animation: heartbeat 2s ease-in-out infinite;
+  width:150px;
+  height:60px;
+  background-image: url("/Hackathon_project-SWASTHYASAKHI-/SSlogo.png");
+  background-size: cover;   
+  background-position: center; 
+  border-radius: 15px;
 }
 
 @keyframes heartbeat {
@@ -1167,15 +1172,16 @@ body {
     <div class="container nav-container">
       <div class="logo">
         <div class="logo-icon">
-          <i data-lucide="heart"></i>
+          
         </div>
-        <h1>SWASTHYASAKHI</h1>
+        <!-- <h1>SWASTHYASAKHI</h1> -->
       </div>
       <nav class="nav-links" id="nav-links">
         <a href="#home">Home</a>
         <a href="#features">Features</a>
         <a href="#about">About</a>
         <a href="#contact">Contact</a>
+        <a href="../login.html">Login/Signup</a>
       </nav>
       <button class="menu-btn" id="menu-btn">
         <i data-lucide="menu"></i>

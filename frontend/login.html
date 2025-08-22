@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Swasthya Sakhi - Women's Health Support</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', Arial, sans-serif;
+            background: linear-gradient(135deg, #f3e7ff 0%, #ffffff 50%, #fef7ff 100%);
+            min-height: 100vh;
+            color: #4a4a4a;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        .container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Left Side - Branding */
+        .brand-section {
+            flex: 0.7;
+            background: linear-gradient(135deg, #7b2d8e 0%, #a855f7 50%, #d946ef 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 40px;
+            position: relative;
+            overflow: hidden;
+            position: fixed;
+            height: 100%;
+            width: 40%; 
+        }
+
+        .brand-section::before {
+            content: '';
+            position: absolute;
+            width: 200%;
+            height: 200%;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="20" cy="20" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="80" cy="40" r="0.8" fill="rgba(255,255,255,0.08)"/><circle cx="40" cy="80" r="1.2" fill="rgba(255,255,255,0.06)"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>') repeat;
+            animation: float 20s ease-in-out infinite;
+        }
+
+        .logo {
+            font-size: 3rem;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 20px;
+            text-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            z-index: 2;
+        }
+
+        .brand-title {
+            font-size: 2.2rem;
+            font-weight: 600;
+            color: white;
+            margin-bottom: 15px;
+            text-align: center;
+            z-index: 2;
+        }
+
+        .brand-subtitle {
+            font-size: 1.1rem;
+            color: rgba(255,255,255,0.9);
+            text-align: center;
+            margin-bottom: 30px;
+            max-width: 400px;
+            z-index: 2;
+        }
+
+        .features-list {
+            list-style: none;
+            color: rgba(255,255,255,0.95);
+            font-size: 1rem;
+            z-index: 2;
+        }
+
+        .features-list li {
+            margin: 10px 0;
+            padding: 5px 0;
+            position: relative;
+        }
+
+        .features-list li::before {
+            content: '✨';
+            margin-right: 10px;
+        }
+
+        
+        /* Right Side - Forms */
+        .form-section {
+            margin-left: 40%; 
+            flex: 1;
+            height: 100vh;
+            overflow-y: auto;
+            padding-left: 220px;
+            padding-top: 60px;
+        }
+
+        .form-container {
+            width: 100%;
+            max-width: 450px;
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(123, 45, 142, 0.1);
+            border: 1px solid rgba(123, 45, 142, 0.1);
+        }
+
+        .form-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .form-title {
+            font-size: 2rem;
+            font-weight: 600;
+            color: #7b2d8e;
+            margin-bottom: 8px;
+        }
+
+        .form-subtitle {
+            color: #666;
+            font-size: 0.95rem;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 500;
+            color: #7b2d8e;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+        }
+
+        .required {
+            color: #dc2626;
+        }
+
+        .optional {
+            color: #10b981;
+            font-weight: 400;
+            font-size: 0.8rem;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #f0d9ff;
+            border-radius: 12px;
+            font-family: inherit;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: rgba(255,255,255,0.8);
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #a855f7;
+            box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.1);
+            background: white;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            margin: 20px 0;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            width: auto;
+            margin-right: 10px;
+            transform: scale(1.2);
+            accent-color: #7b2d8e;
+        }
+
+        .checkbox-group label {
+            margin: 0;
+            font-size: 0.9rem;
+            cursor: pointer;
+        }
+
+        .submit-btn {
+            width: 100%;
+            background: linear-gradient(135deg, #7b2d8e 0%, #a855f7 100%);
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(123, 45, 142, 0.3);
+        }
+
+        .submit-btn:active {
+            transform: translateY(0);
+        }
+
+        .form-switch {
+            text-align: center;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #f0d9ff;
+        }
+
+        .form-switch a {
+            color: #7b2d8e;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .form-switch a:hover {
+            color: #a855f7;
+        }
+
+        .forgot-password {
+            text-align: right;
+            margin-top: 10px;
+        }
+
+        .forgot-password a {
+            color: #7b2d8e;
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.3s ease;
+        }
+
+        .forgot-password a:hover {
+            color: #a855f7;
+        }
+
+        .section-divider {
+            margin: 30px 0;
+            padding: 20px 0;
+            border-top: 2px solid #f3e7ff;
+            position: relative;
+        }
+
+        .section-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #7b2d8e;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+
+        .section-title::before {
+            content: '';
+            width: 4px;
+            height: 20px;
+            background: linear-gradient(135deg, #7b2d8e, #a855f7);
+            border-radius: 2px;
+            margin-right: 10px;
+        }
+
+        /* Hide forms initially */
+        .form-container {
+            opacity: 0;
+            transform: translateX(20px);
+            animation: slideIn 0.6s ease forwards;
+        }
+
+        /* Page switching */
+        .page {
+            display: none;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        @keyframes slideIn {
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-10px) rotate(1deg); }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 968px) {
+            .container {
+                flex-direction: column;
+            }
+            
+            .brand-section {
+                min-height: 200px;
+                padding: 30px 20px;
+            }
+            
+            .brand-title {
+                font-size: 1.8rem;
+            }
+            
+            .features-list {
+                display: none;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .form-section {
+                padding: 20px;
+            }
+            
+            .form-container {
+                padding: 30px 20px;
+            }
+            
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            
+            .brand-title {
+                font-size: 1.5rem;
+            }
+            
+            .logo {
+                font-size: 2rem;
+            }
+        }
+
+        /* Loading states */
+        .loading {
+            position: relative;
+            pointer-events: none;
+        }
+
+        .loading::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 20px;
+            height: 20px;
+            border: 2px solid transparent;
+            border-top: 2px solid white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            transform: translate(-50%, -50%);
+        }
+
+        @keyframes spin {
+            0% { transform: translate(-50%, -50%) rotate(0deg); }
+            100% { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+
+        /* Success/Error messages */
+        .message {
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 0.9rem;
+            opacity: 0;
+            transform: translateY(-10px);
+            animation: messageSlide 0.3s ease forwards;
+        }
+
+        .message.success {
+            background: #f0fdf4;
+            color: #059669;
+            border: 1px solid #bbf7d0;
+        }
+
+        .message.error {
+            background: #fef2f2;
+            color: #dc2626;
+            border: 1px solid #fecaca;
+        }
+
+        @keyframes messageSlide {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Left Side - Brand Section -->
+        <div class="brand-section">
+            <div class="logo">🌸</div>
+            <h1 class="brand-title">Swasthya Sakhi</h1>
+            <p class="brand-subtitle">Your trusted companion for women's health and wellness journey</p>
+            <ul class="features-list">
+                <li>Pregnancy & Postpartum Care</li>
+                <li>Period Tracking & Reminders</li>
+                <li>Emergency Support & Safety</li>
+                <li>Personalized Health Insights</li>
+                <li>Community Support Network</li>
+            </ul>
+        </div>
+
+        <!-- Right Side - Forms -->
+        <div class="form-section">
+            <!-- Login Page -->
+            <div class="page active" id="loginPage">
+                <div class="form-container">
+                    <div class="form-header">
+                        <h2 class="form-title">Welcome Back</h2>
+                        <p class="form-subtitle">Sign in to continue your health journey</p>
+                    </div>
+
+                    <div id="loginMessage"></div>
+
+                    <form id="loginForm">
+                        <div class="form-group">
+                            <label for="loginEmail">Email or Mobile Number <span class="required">*</span></label>
+                            <input type="text" id="loginEmail" name="email" required placeholder="Enter your email or mobile">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="loginPassword">Password <span class="required">*</span></label>
+                            <input type="password" id="loginPassword" name="password" required placeholder="Enter your password">
+                        </div>
+
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="rememberMe" name="rememberMe">
+                            <label for="rememberMe">Remember me</label>
+                        </div>
+
+                        <button type="submit" class="submit-btn">Sign In</button>
+
+                        <div class="forgot-password">
+                            <a href="#" onclick="showForgotPassword()">Forgot Password?</a>
+                        </div>
+                    </form>
+
+                    <div class="form-switch">
+                        <p>Don't have an account? <a href="#" onclick="showSignup()">Sign up here</a></p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Signup Page -->
+            <div class="page" id="signupPage">
+                <div class="form-container">
+                    <div class="form-header">
+                        <h2 class="form-title">Join Swasthya Sakhi</h2>
+                        <p class="form-subtitle">Create your account for personalized care</p>
+                    </div>
+
+                    <div id="signupMessage"></div>
+
+                    <form id="signupForm">
+                        <!-- Personal Information -->
+                        <div class="section-title">👩 Personal Information</div>
+                        
+                        <div class="form-group">
+                            <label for="fullName">Full Name <span class="required">*</span></label>
+                            <input type="text" id="fullName" name="fullName" required placeholder="Enter your full name">
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="age">Age <span class="required">*</span></label>
+                                <input type="number" id="age" name="age" required min="13" max="100" placeholder="25">
+                            </div>
+                            <div class="form-group">
+                                <label for="gender">Gender</label>
+                                <select id="gender" name="gender">
+                                    <option value="Female" selected>Female</option>
+                                    <option value="Male">Male</option>
+                                    <option value="Other">Other</option>
+                                    <option value="Prefer not to say">Prefer not to say</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="location">Location (City, State) <span class="required">*</span></label>
+                            <input type="text" id="location" name="location" required placeholder="Mumbai, Maharashtra">
+                        </div>
+
+                        <!-- Safety & Contact Information -->
+                        <div class="section-divider">
+                            <div class="section-title">📞 Safety & Contact Information</div>
+                            
+                            <div class="form-group">
+                                <label for="phoneNumber">Phone Number <span class="required">*</span></label>
+                                <input type="tel" id="phoneNumber" name="phoneNumber" required placeholder="+91-9876543210">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="emergencyContact">Emergency Contact Number <span class="required">*</span></label>
+                                <input type="tel" id="emergencyContact" name="emergencyContact" required placeholder="+91-9876543210">
+                            </div>
+                        </div>
+
+                        <!-- Account Credentials -->
+                        <div class="section-divider">
+                            <div class="section-title">🔑 Account Credentials</div>
+                            
+                            <div class="form-group">
+                                <label for="signupEmail">Email <span class="required">*</span></label>
+                                <input type="email" id="signupEmail" name="email" required placeholder="your.email@example.com">
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="signupPassword">Password <span class="required">*</span></label>
+                                    <input type="password" id="signupPassword" name="password" required placeholder="Create password">
+                                </div>
+                                <div class="form-group">
+                                    <label for="confirmPassword">Confirm Password <span class="required">*</span></label>
+                                    <input type="password" id="confirmPassword" name="confirmPassword" required placeholder="Confirm password">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Consent Checkbox -->
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="dataConsent" name="dataConsent" required>
+                            <label for="dataConsent">I agree to share my health data securely for personalized support <span class="required">*</span></label>
+                        </div>
+
+                        <button type="submit" class="submit-btn">Create Account</button>
+                    </form>
+
+                    <div class="form-switch">
+                        <p>Already have an account? <a href="#" onclick="showLogin()">Sign in here</a></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Page switching functions
+        function showLogin() {
+            document.getElementById('signupPage').classList.remove('active');
+            document.getElementById('loginPage').classList.add('active');
+            clearMessages();
+        }
+
+        function showSignup() {
+            document.getElementById('loginPage').classList.remove('active');
+            document.getElementById('signupPage').classList.add('active');
+            clearMessages();
+        }
+
+        function showForgotPassword() {
+            showMessage('loginMessage', 'Password reset link will be sent to your email.', 'success');
+            // In a real app, this would open a forgot password modal or redirect
+        }
+
+        // Message functions
+        function showMessage(containerId, message, type) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = `<div class="message ${type}">${message}</div>`;
+            setTimeout(() => clearMessages(), 5000);
+        }
+
+        function clearMessages() {
+            document.getElementById('loginMessage').innerHTML = '';
+            document.getElementById('signupMessage').innerHTML = '';
+        }
+
+        // Form validation and submission
+        document.getElementById('loginForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(e.target);
+            const email = formData.get('email');
+            const password = formData.get('password');
+
+            if (!email || !password) {
+                showMessage('loginMessage', 'Please fill in all required fields.', 'error');
+                return;
+            }
+
+            // Loading state
+            const submitBtn = e.target.querySelector('.submit-btn');
+            submitBtn.classList.add('loading');
+            submitBtn.textContent = 'Signing In...';
+
+            try {
+                // Simulate API call
+                await simulateApiCall({ email, password });
+                
+                showMessage('loginMessage', 'Login successful! Redirecting...', 'success');
+                
+                setTimeout(() => {
+                    // In a real app, redirect to dashboard
+                    alert('Redirecting to dashboard...');
+                }, 1500);
+
+            } catch (error) {
+                showMessage('loginMessage', 'Invalid credentials. Please try again.', 'error');
+            } finally {
+                submitBtn.classList.remove('loading');
+                submitBtn.textContent = 'Sign In';
+            }
+        });
+
+        document.getElementById('signupForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(e.target);
+            const data = Object.fromEntries(formData);
+
+            // Validation
+            if (!data.fullName || !data.age || !data.location || !data.phoneNumber || 
+                !data.emergencyContact || !data.email || !data.password || !data.confirmPassword) {
+                showMessage('signupMessage', 'Please fill in all required fields.', 'error');
+                return;
+            }
+
+            if (data.password !== data.confirmPassword) {
+                showMessage('signupMessage', 'Passwords do not match.', 'error');
+                return;
+            }
+
+            if (data.password.length < 6) {
+                showMessage('signupMessage', 'Password must be at least 6 characters long.', 'error');
+                return;
+            }
+
+            if (!data.dataConsent) {
+                showMessage('signupMessage', 'Please agree to the data sharing terms.', 'error');
+                return;
+            }
+
+            // Loading state
+            const submitBtn = e.target.querySelector('.submit-btn');
+            submitBtn.classList.add('loading');
+            submitBtn.textContent = 'Creating Account...';
+
+            try {
+                // Simulate API call
+                await simulateApiCall(data, 1500);
+                
+                showMessage('signupMessage', 'Account created successfully! Please sign in.', 'success');
+                
+                setTimeout(() => {
+                    showLogin();
+                }, 2000);
+
+            } catch (error) {
+                showMessage('signupMessage', 'Registration failed. Email might already be in use.', 'error');
+            } finally {
+                submitBtn.classList.remove('loading');
+                submitBtn.textContent = 'Create Account';
+            }
+        });
+
+        // Utility functions
+        function simulateApiCall(data, delay = 1000) {
+            return new Promise((resolve, reject) => {
+                setTimeout(() => {
+                    // Simulate random success/failure for demo
+                    if (Math.random() > 0.1) {
+                        resolve(data);
+                    } else {
+                        reject(new Error('API Error'));
+                    }
+                }, delay);
+            });
+        }
+
+        // Auto-fill current date for last period (optional convenience)
+        document.getElementById('lastPeriod').max = new Date().toISOString().split('T')[0];
+
+        // Real-time password confirmation validation
+        document.getElementById('confirmPassword').addEventListener('input', function() {
+            const password = document.getElementById('signupPassword').value;
+            const confirmPassword = this.value;
+            
+            if (confirmPassword && password !== confirmPassword) {
+                this.style.borderColor = '#dc2626';
+            } else {
+                this.style.borderColor = '#f0d9ff';
+            }
+        });
+
+        // Phone number format validation
+        document.getElementById('phoneNumber').addEventListener('input', function() {
+            let value = this.value.replace(/\D/g, '');
+            if (value.length >= 10) {
+                value = value.replace(/(\d{2})(\d{5})(\d{5})/, '+$1-$2$3');
+            }
+            this.value = value;
+        });
+
+        document.getElementById('emergencyContact').addEventListener('input', function() {
+            let value = this.value.replace(/\D/g, '');
+            if (value.length >= 10) {
+                value = value.replace(/(\d{2})(\d{5})(\d{5})/, '+$1-$2$3');
+            }
+            this.value = value;
+        });
+    </script>
+</body>
+</html>
