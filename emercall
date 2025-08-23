@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Emergency Alert</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    .container {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      border-radius: 20px;
+      padding: 40px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+      text-align: center;
+      max-width: 400px;
+      width: 100%;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .header {
+      margin-bottom: 30px;
+    }
+
+    .title {
+      font-size: 28px;
+      font-weight: 700;
+      color: #2d3748;
+      margin-bottom: 10px;
+    }
+
+    .subtitle {
+      font-size: 16px;
+      color: #718096;
+      line-height: 1.5;
+    }
+
+    .emergency-button {
+      position: relative;
+      background: linear-gradient(135deg, #ff4757 0%, #ff3742 100%);
+      border: none;
+      border-radius: 50%;
+      width: 160px;
+      height: 160px;
+      color: white;
+      font-size: 24px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 10px 30px rgba(255, 71, 87, 0.4);
+      margin: 20px 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      overflow: hidden;
+    }
+
+    .emergency-button:hover {
+      transform: translateY(-5px) scale(1.05);
+      box-shadow: 0 20px 40px rgba(255, 71, 87, 0.6);
+    }
+
+    .emergency-button:active {
+      transform: translateY(-2px) scale(1.02);
+    }
+
+    .emergency-button::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(135deg, transparent 0%, rgba(255, 255, 255, 0.1) 50%, transparent 100%);
+      transform: translateX(-100%);
+      transition: transform 0.6s;
+    }
+
+    .emergency-button:hover::before {
+      transform: translateX(100%);
+    }
+
+    .button-icon {
+      font-size: 40px;
+      animation: pulse 2s infinite;
+    }
+
+    .button-text {
+      font-size: 18px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    @keyframes pulse {
+      0%, 100% {
+        transform: scale(1);
+      }
+      50% {
+        transform: scale(1.1);
+      }
+    }
+
+    .info-section {
+      margin-top: 30px;
+      padding-top: 30px;
+      border-top: 1px solid rgba(113, 128, 150, 0.2);
+    }
+
+    .info-text {
+      font-size: 14px;
+      color: #718096;
+      line-height: 1.6;
+      margin-bottom: 15px;
+    }
+
+    .feature-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      text-align: left;
+    }
+
+    .feature-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 14px;
+      color: #4a5568;
+    }
+
+    .feature-icon {
+      font-size: 16px;
+      color: #48bb78;
+    }
+
+    .status-indicator {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: rgba(0, 0, 0, 0.8);
+      color: white;
+      padding: 10px 15px;
+      border-radius: 25px;
+      font-size: 12px;
+      display: none;
+    }
+
+    .loading {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+      border-top-color: white;
+      animation: spin 1s ease-in-out infinite;
+      margin-right: 10px;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    @media (max-width: 480px) {
+      .container {
+        padding: 30px 20px;
+        margin: 10px;
+      }
+      
+      .title {
+        font-size: 24px;
+      }
+      
+      .emergency-button {
+        width: 140px;
+        height: 140px;
+        font-size: 20px;
+      }
+      
+      .button-icon {
+        font-size: 35px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="status-indicator" id="statusIndicator"></div>
+  
+  <div class="container">
+    <div class="header">
+      <h1 class="title">Emergency Alert</h1>
+      <p class="subtitle">Press the button below to instantly send your location to emergency contacts via WhatsApp</p>
+    </div>
+
+    <button class="emergency-button" onclick="sendEmergency()" id="emergencyBtn">
+      <span class="button-icon">🚨</span>
+      <span class="button-text">Emergency</span>
+    </button>
+
+    <div class="info-section">
+      <p class="info-text">This will automatically:</p>
+      <div class="feature-list">
+        <div class="feature-item">
+          <span class="feature-icon">📍</span>
+          <span>Get your current location</span>
+        </div>
+        <div class="feature-item">
+          <span class="feature-icon">📱</span>
+          <span>Open WhatsApp chats with contacts</span>
+        </div>
+        <div class="feature-item">
+          <span class="feature-icon">⚡</span>
+          <span>Send instant emergency alerts</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function showStatus(message, duration = 3000) {
+      const indicator = document.getElementById('statusIndicator');
+      indicator.innerHTML = message;
+      indicator.style.display = 'block';
+      setTimeout(() => {
+        indicator.style.display = 'none';
+      }, duration);
+    }
+
+    function sendEmergency() {
+      const btn = document.getElementById('emergencyBtn');
+      const originalContent = btn.innerHTML;
+      
+      // Show loading state
+      btn.innerHTML = '<div class="loading"></div><span style="font-size: 16px;">Getting Location...</span>';
+      btn.disabled = true;
+      
+      showStatus('🔄 Getting your location...', 5000);
+
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(function(position) {
+          const lat = position.coords.latitude;
+          const lon = position.coords.longitude;
+          const mapsLink = `https://www.google.com/maps?q=${lat},${lon}`;
+          
+          const message = `🚨 Emergency Needed! Please help!\n📍 My live location: ${mapsLink}`;
+
+          // 3 emergency contacts (WhatsApp numbers with country code, no + or leading 0)
+          const contacts = ["919467231331"];
+
+          showStatus('✅ Sending alerts to emergency contacts...');
+
+          // Open WhatsApp chat for each contact
+          contacts.forEach((number, index) => {
+            setTimeout(() => {
+              const url = `https://wa.me/${number}?text=${encodeURIComponent(message)}`;
+              window.open(url, "_blank");
+            }, index * 500); // Stagger the openings
+          });
+
+          // Reset button after 3 seconds
+          setTimeout(() => {
+            btn.innerHTML = originalContent;
+            btn.disabled = false;
+            showStatus('🚨 Emergency alerts sent successfully!');
+          }, 3000);
+
+        }, function(error) {
+          btn.innerHTML = originalContent;
+          btn.disabled = false;
+          
+          let errorMessage = "Location access denied. Please enable GPS to send location.";
+          if (error.code === 1) {
+            errorMessage = "Location access denied. Please allow location access and try again.";
+          } else if (error.code === 2) {
+            errorMessage = "Location unavailable. Please check your GPS connection.";
+          } else if (error.code === 3) {
+            errorMessage = "Location request timeout. Please try again.";
+          }
+          
+          alert(errorMessage);
+          showStatus('❌ Failed to get location');
+        });
+      } else {
+        btn.innerHTML = originalContent;
+        btn.disabled = false;
+        alert("Geolocation not supported in this browser.");
+        showStatus('❌ Geolocation not supported');
+      }
+    }
+
+    // Add keyboard support
+    document.addEventListener('keydown', function(event) {
+      if (event.code === 'Space' || event.code === 'Enter') {
+        event.preventDefault();
+        sendEmergency();
+      }
+    });
+  </script>
+</body>
+</html>
