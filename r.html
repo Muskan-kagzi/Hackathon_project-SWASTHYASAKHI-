@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>STI & Pregnancy Risk Calculator</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <!-- Panic Exit Button -->
+    <button id="panicExit" class="panic-exit" title="Quick Exit">
+        <i class="fas fa-times"></i>
+    </button>
+
+    <div class="container">
+        <header class="header">
+            <h1><i class="fas fa-heart-pulse"></i> STI & Pregnancy Risk Calculator</h1>
+            <p>Get personalized risk assessment and resources for your sexual health</p>
+        </header>
+
+        <main class="main-content">
+            <!-- Risk Calculator Section -->
+            <section class="calculator-section">
+                <div class="card calculator-card">
+                    <h2><i class="fas fa-calculator"></i> Risk Assessment</h2>
+                    <form id="riskForm" class="risk-form">
+                        <div class="form-group">
+                            <label for="protection">Protection Used:</label>
+                            <select id="protection" name="protection" required>
+                                <option value="">Select protection method</option>
+                                <option value="condom">Condom</option>
+                                <option value="birth-control">Birth Control Pills</option>
+                                <option value="both">Condom + Birth Control</option>
+                                <option value="none">No Protection</option>
+                                <option value="withdrawal">Withdrawal Method</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="timing">Timing in Menstrual Cycle:</label>
+                            <select id="timing" name="timing" required>
+                                <option value="">Select timing</option>
+                                <option value="ovulation">During Ovulation (Days 12-16)</option>
+                                <option value="fertile">Fertile Window (Days 8-18)</option>
+                                <option value="period">During Period</option>
+                                <option value="safe">Safe Period</option>
+                                <option value="unknown">Not Sure</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="partner">Partner Status:</label>
+                            <select id="partner" name="partner" required>
+                                <option value="">Select partner status</option>
+                                <option value="known-clean">Known Clean (Recent Tests)</option>
+                                <option value="unknown">Unknown Status</option>
+                                <option value="multiple">Multiple Partners</option>
+                                <option value="new">New Partner</option>
+                            </select>
+                        </div>
+
+                        <button type="submit" class="calculate-btn">
+                            <i class="fas fa-chart-line"></i> Calculate Risk
+                        </button>
+                    </form>
+
+                    <div id="results" class="results hidden">
+                        <h3>Your Risk Assessment</h3>
+                        <div class="risk-level">
+                            <div class="risk-indicator"></div>
+                            <span class="risk-text"></span>
+                        </div>
+                        <div class="next-steps">
+                            <h4>Recommended Next Steps:</h4>
+                            <ul id="recommendations"></ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Emergency Resources Section -->
+            <section class="emergency-section">
+                <h2><i class="fas fa-exclamation-triangle"></i> Emergency Resources</h2>
+                <div class="cards-grid">
+                    <div class="card emergency-card">
+                        <i class="fas fa-pills"></i>
+                        <h3>Emergency Contraception</h3>
+                        <p>Get emergency pills within 72-120 hours</p>
+                        <button class="resource-btn" onclick="showEmergencyPill()">
+                            Set Reminder
+                        </button>
+                    </div>
+
+                    <div class="card emergency-card">
+                        <i class="fas fa-phone"></i>
+                        <h3>Emergency Helpline</h3>
+                        <p>24/7 confidential support and guidance</p>
+                        <a href="tel:1-800-230-PLAN" class="resource-btn">
+                            Call Now
+                        </a>
+                    </div>
+
+                    <div class="card emergency-card">
+                        <i class="fas fa-hospital"></i>
+                        <h3>Safe Abortion Resources</h3>
+                        <p>Find safe, legal abortion services</p>
+                        <button class="resource-btn" onclick="showAbortionResources()">
+                            Find Resources
+                        </button>
+                    </div>
+
+                    <div class="card emergency-card">
+                        <i class="fas fa-hands-helping"></i>
+                        <h3>NGO Support</h3>
+                        <p>Connect with support organizations</p>
+                        <button class="resource-btn" onclick="showNGOLinks()">
+                            Get Support
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Legal & Privacy Section -->
+            <section class="legal-section">
+                <div class="card legal-card">
+                    <h2><i class="fas fa-balance-scale"></i> Legal Rights & Privacy</h2>
+                    <div class="legal-content">
+                        <div class="legal-item">
+                            <h3><i class="fas fa-gavel"></i> Your Legal Rights</h3>
+                            <p>You have the right to confidential reproductive healthcare. Your medical information is protected by privacy laws.</p>
+                        </div>
+                        <div class="legal-item">
+                            <h3><i class="fas fa-shield-alt"></i> Safe Abortion Laws</h3>
+                            <p>Abortion is legal in many jurisdictions. Access varies by location - know your local laws and available services.</p>
+                        </div>
+                        <div class="legal-item">
+                            <h3><i class="fas fa-user-secret"></i> Privacy Features</h3>
+                            <p>This calculator doesn't store your data. Use incognito mode for additional privacy. Clear your browser history if needed.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <footer class="footer">
+            <p><i class="fas fa-info-circle"></i> This tool provides general information only. Always consult healthcare professionals for medical advice.</p>
+        </footer>
+    </div>
+
+    <!-- Modal for Emergency Pill Reminder -->
+    <div id="pillModal" class="modal hidden">
+        <div class="modal-content">
+            <span class="close" onclick="closePillModal()">&times;</span>
+            <h3><i class="fas fa-clock"></i> Emergency Pill Reminder</h3>
+            <p>Emergency contraception is most effective when taken as soon as possible:</p>
+            <ul>
+                <li><strong>Plan B:</strong> Up to 72 hours (3 days)</li>
+                <li><strong>ella:</strong> Up to 120 hours (5 days)</li>
+            </ul>
+            <button onclick="setReminder()" class="reminder-btn">Set Phone Reminder</button>
+        </div>
+    </div>
+
+    <!-- Modal for Resources -->
+    <div id="resourceModal" class="modal hidden">
+        <div class="modal-content">
+            <span class="close" onclick="closeResourceModal()">&times;</span>
+            <div id="modalContent"></div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
